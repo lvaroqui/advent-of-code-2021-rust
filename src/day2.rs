@@ -38,10 +38,10 @@ impl FromStr for Line {
     }
 }
 
-pub struct Solver1 {}
+pub struct Solver {}
 
-impl crate::Solver for Solver1 {
-    fn solve(self: &mut Self, lines: Lines) -> String {
+impl crate::Solver for Solver {
+    fn solve_part1(self: &mut Self, lines: Lines) -> String {
         let mut x = 0;
         let mut d = 0;
 
@@ -55,12 +55,8 @@ impl crate::Solver for Solver1 {
 
         (x * d).to_string()
     }
-}
 
-pub struct Solver2 {}
-
-impl crate::Solver for Solver2 {
-    fn solve(self: &mut Self, lines: Lines) -> String {
+    fn solve_part2(self: &mut Self, lines: Lines) -> String {
         let mut x = 0;
         let mut d = 0;
         let mut aim = 0;

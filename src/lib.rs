@@ -4,9 +4,14 @@ use std::str::FromStr;
 
 mod day1;
 mod day2;
+mod day3;
 
 pub trait Solver {
-    fn solve(self: &mut Self, _lines: Lines) -> String {
+    fn solve_part1(self: &mut Self, _lines: Lines) -> String {
+        "".to_string()
+    }
+
+    fn solve_part2(self: &mut Self, _lines: Lines) -> String {
         "".to_string()
     }
 }
@@ -40,12 +45,11 @@ where
     T::from_str(&line).unwrap()
 }
 
-pub fn get_solver(day: u32, part: u32) -> Box<dyn Solver> {
-    match (day, part) {
-        (1, 1) => Box::new(day1::Solver1 {}),
-        (1, 2) => Box::new(day1::Solver2 {}),
-        (2, 1) => Box::new(day2::Solver1 {}),
-        (2, 2) => Box::new(day2::Solver2 {}),
-        _ => panic!("Day {} part {} is not implemented yet", day, part),
+pub fn get_solver(day: u32) -> Box<dyn Solver> {
+    match day {
+        1 => Box::new(day1::Solver {}),
+        2 => Box::new(day2::Solver {}),
+        3 => Box::new(day3::Solver {}),
+        _ => panic!("Day {} is not implemented yet", day),
     }
 }
