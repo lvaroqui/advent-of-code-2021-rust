@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::{parse_line, Lines};
 
-pub struct Solver1 {}
+pub struct Solver {}
 
 impl crate::Solver for Solver {
     fn solve_part1(self: &mut Self, lines: Lines) -> String {

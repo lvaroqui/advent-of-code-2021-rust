@@ -5,6 +5,7 @@ use std::str::FromStr;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 pub trait Solver {
     fn solve_part1(self: &mut Self, _lines: Lines) -> String {
@@ -50,6 +51,7 @@ pub fn get_solver(day: u32) -> Box<dyn Solver> {
         1 => Box::new(day1::Solver {}),
         2 => Box::new(day2::Solver {}),
         3 => Box::new(day3::Solver {}),
+        4 => Box::new(day4::Solver {}),
         _ => panic!("Day {} is not implemented yet", day),
     }
 }
