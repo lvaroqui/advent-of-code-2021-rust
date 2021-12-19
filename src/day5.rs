@@ -1,4 +1,4 @@
-use std::{collections::HashMap, path::Iter, str::FromStr};
+use std::{collections::HashMap, str::FromStr};
 
 use crate::{parse_line, Lines};
 

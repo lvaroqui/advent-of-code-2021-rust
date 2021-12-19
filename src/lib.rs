@@ -7,6 +7,7 @@ mod day2;
 mod day3;
 mod day4;
 mod day5;
+mod day6;
 
 pub trait Solver {
     fn solve_part1(self: &mut Self, _lines: Lines) -> String {
@@ -54,6 +55,7 @@ pub fn get_solver(day: u32) -> Box<dyn Solver> {
         3 => Box::new(day3::Solver {}),
         4 => Box::new(day4::Solver {}),
         5 => Box::new(day5::Solver {}),
+        6 => Box::new(day6::Solver {}),
         _ => panic!("Day {} is not implemented yet", day),
     }
 }
