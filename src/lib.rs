@@ -3,12 +3,14 @@ use std::io::{self, BufReader};
 use std::str::FromStr;
 
 mod day1;
-mod day106;
 mod day2;
 mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
+
+mod day106;
 
 pub trait Solver {
     fn solve_part1(self: &mut Self, _lines: Lines) -> String {
@@ -57,6 +59,7 @@ pub fn get_solver(day: u32) -> Box<dyn Solver> {
         4 => Box::new(day4::Solver {}),
         5 => Box::new(day5::Solver {}),
         6 => Box::new(day6::Solver {}),
+        7 => Box::new(day7::Solver {}),
         106 => Box::new(day106::Solver {}),
         _ => panic!("Day {} is not implemented yet", day),
     }
