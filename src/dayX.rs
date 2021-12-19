@@ -1,6 +1,4 @@
-use std::str::FromStr;
-
-use crate::{parse_line, Lines};
+use crate::Lines;
 
 pub struct Solver {}
 
