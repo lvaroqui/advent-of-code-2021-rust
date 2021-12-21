@@ -10,6 +10,7 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 
 mod day106;
 
@@ -62,6 +63,7 @@ pub fn get_solver(day: u32) -> Box<dyn Solver> {
         6 => Box::new(day6::Solver {}),
         7 => Box::new(day7::Solver {}),
         8 => Box::new(day8::Solver {}),
+        9 => Box::new(day9::Solver {}),
         106 => Box::new(day106::Solver {}),
         _ => panic!("Day {} is not implemented yet", day),
     }
