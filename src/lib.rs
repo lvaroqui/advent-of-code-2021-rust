@@ -27,6 +27,18 @@ pub trait Solver {
     }
 }
 
+struct DummySolver {}
+
+impl Solver for DummySolver {
+    fn solve_part1(self: &mut Self, _lines: Lines) -> String {
+        "yet to be implemented".to_string()
+    }
+
+    fn solve_part2(self: &mut Self, _lines: Lines) -> String {
+        "yet to be implemented".to_string()
+    }
+}
+
 pub struct Lines {
     lines: io::Lines<BufReader<File>>,
 }
@@ -70,6 +82,6 @@ pub fn get_solver(day: u32) -> Box<dyn Solver> {
         10 => Box::new(day10::Solver {}),
         11 => Box::new(day11::Solver {}),
         106 => Box::new(day106::Solver {}),
-        _ => panic!("Day {} is not implemented yet", day),
+        _ => Box::new(DummySolver {}),
     }
 }
