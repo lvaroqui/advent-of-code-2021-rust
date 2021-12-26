@@ -1,4 +1,5 @@
 use advent_of_code_2021::*;
+use anyhow::anyhow;
 use anyhow::bail;
 
 use std::env;
@@ -6,6 +7,23 @@ use std::fs;
 use std::io::Read;
 use std::io::Write;
 use std::io::{self, BufRead};
+
+fn get_day_part(args: &Vec<String>) -> anyhow::Result<(u32, u32)> {
+    let day = args[1].parse::<u32>();
+    let part = args[2].parse::<u32>();
+
+    if let (Ok(day), Ok(part)) = (day, part) {
+        if day > 25 {
+            return Err(anyhow!("Day not in range (0-25 expected, got {})", day));
+        }
+        if !(part == 1 || part == 2) {
+            return Err(anyhow!("Part not in range (1 or 2 expected, got {})", part));
+        }
+        return Ok((day, part));
+    }
+
+    Err(anyhow!("Could not parse day or part"))
+}
 
 fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -15,10 +33,7 @@ fn main() -> anyhow::Result<()> {
         bail!("Bad input parameters");
     }
 
-    let day: u32 = args[1].parse().expect("Please provide a day number");
-    let part: u32 = args[2].parse().expect("Please provide a part number");
-
-    assert!(part == 1 || part == 2, "Invalid part number");
+    let (day, part) = get_day_part(&args)?;
 
     // Retrieve inputs if they do not exists
     let input_dir = std::path::Path::new("inputs");
