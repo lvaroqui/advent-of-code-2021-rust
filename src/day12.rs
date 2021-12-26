@@ -3,7 +3,21 @@ use crate::Lines;
 use petgraph::graph::NodeIndex;
 use petgraph::{Graph, Undirected};
 
-pub struct Solver {}
+pub struct Solver {
+    start: NodeIndex,
+    end: NodeIndex,
+    small_cave: Vec<bool>,
+}
+
+impl Default for Solver {
+    fn default() -> Self {
+        Self {
+            start: Default::default(),
+            end: Default::default(),
+            small_cave: Default::default(),
+        }
+    }
+}
 
 type MyGraph = Graph<String, (), Undirected>;
 
@@ -28,34 +42,37 @@ impl Solver {
         g
     }
 
+    fn init(&mut self, g: &MyGraph) {
+        self.start = self.find_node_index(&g, "start");
+        self.end = self.find_node_index(&g, "end");
+
+        self.small_cave = vec![false; g.node_count()];
+        g.node_indices()
+            .for_each(|i| self.small_cave[i.index()] = g[i].chars().any(|c| c.is_lowercase()));
+    }
+
     fn find_node_index(&self, g: &MyGraph, name: &str) -> NodeIndex {
         g.node_indices().find(|i| g[*i] == name).unwrap()
     }
 
-    fn is_cave_small(&self, g: &MyGraph, index: NodeIndex) -> bool {
-        g[index].chars().any(|c| c.is_lowercase())
+    fn is_cave_small(&self, index: NodeIndex) -> bool {
+        self.small_cave[index.index()]
     }
 
-    fn count_path(
-        &self,
-        n: NodeIndex,
-        end: NodeIndex,
-        g: &MyGraph,
-        visited: &mut Vec<bool>,
-    ) -> u32 {
+    fn count_path(&self, n: NodeIndex, g: &MyGraph, visited: &mut Vec<bool>) -> u32 {
         let mut sum = 0;
 
-        if n == end {
+        if n == self.end {
             return 1;
         }
 
-        visited[n.index()] = self.is_cave_small(&g, n);
+        visited[n.index()] = self.is_cave_small(n);
 
         for other in g.neighbors(n) {
             if visited[other.index()] {
                 continue;
             }
-            sum += self.count_path(other, end, &g, &mut visited.clone());
+            sum += self.count_path(other, &g, &mut visited.clone());
         }
 
         sum
@@ -64,34 +81,49 @@ impl Solver {
     fn count_path_2(
         &self,
         n: NodeIndex,
-        start: NodeIndex,
-        end: NodeIndex,
+        mut visited_twice: bool,
         g: &MyGraph,
         visited: &mut Vec<u32>,
     ) -> u32 {
         let mut sum = 0;
 
-        if n == end {
+        if n == self.end {
             return 1;
         }
 
-        if self.is_cave_small(&g, n) {
+        if self.is_cave_small(n) {
             visited[n.index()] += 1;
+            if visited[n.index()] == 2 {
+                visited_twice = true;
+            }
         }
 
         for other in g.neighbors(n) {
-            if other == start {
+            if other == self.start {
                 continue;
             }
 
-            if self.is_cave_small(&g, other)
-                && visited[other.index()] >= 1
-                && visited.iter().any(|n| *n == 2)
-            {
+            if visited[other.index()] >= 1 && visited_twice {
                 continue;
             }
 
-            sum += self.count_path_2(other, start, end, &g, &mut visited.clone());
+            // Save allocations by avoiding unnecessary clone when cave is big
+            let mut cloned = if self.is_cave_small(other) {
+                Some(visited.clone())
+            } else {
+                None
+            };
+
+            sum += self.count_path_2(
+                other,
+                visited_twice,
+                &g,
+                if let Some(v) = cloned.as_mut() {
+                    v
+                } else {
+                    visited
+                },
+            );
         }
 
         sum
@@ -102,24 +134,22 @@ impl crate::Solver for Solver {
     fn solve_part1(self: &mut Self, lines: Lines) -> String {
         let g = self.parse_graph(lines);
 
-        let start = self.find_node_index(&g, "start");
-        let end = self.find_node_index(&g, "end");
+        self.init(&g);
 
         let mut vec = vec![false; g.node_count()];
-        vec[start.index()] = true;
+        vec[self.start.index()] = true;
 
-        self.count_path(start, end, &g, &mut vec).to_string()
+        self.count_path(self.start, &g, &mut vec).to_string()
     }
 
     fn solve_part2(self: &mut Self, lines: Lines) -> String {
         let g = self.parse_graph(lines);
 
-        let start = self.find_node_index(&g, "start");
-        let end = self.find_node_index(&g, "end");
+        self.init(&g);
 
         let mut vec = vec![0; g.node_count()];
 
-        self.count_path_2(start, start, end, &g, &mut vec)
+        self.count_path_2(self.start, false, &g, &mut vec)
             .to_string()
     }
 }
