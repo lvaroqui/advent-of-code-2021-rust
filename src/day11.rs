@@ -22,29 +22,26 @@ impl Iterator for Neightbours {
     type Item = (usize, usize);
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.current == 8 {
-            return None;
-        }
-        let (x, y) = self.point;
-        let (x, y) = match self.current {
-            0 => (x - 1, y),
-            1 => (x - 1, y + 1),
-            2 => (x, y + 1),
-            3 => (x + 1, y + 1),
-            4 => (x + 1, y),
-            5 => (x + 1, y - 1),
-            6 => (x, y - 1),
-            7 => (x - 1, y - 1),
-            _ => panic!("This should never happens"),
+        let (x1, y1) = self.point;
+        let (x2, y2) = match self.current {
+            0 => (x1 - 1, y1),
+            1 => (x1 - 1, y1 + 1),
+            2 => (x1, y1 + 1),
+            3 => (x1 + 1, y1 + 1),
+            4 => (x1 + 1, y1),
+            5 => (x1 + 1, y1 - 1),
+            6 => (x1, y1 - 1),
+            7 => (x1 - 1, y1 - 1),
+            _ => return None,
         };
 
         self.current += 1;
 
-        if x < 0 || y < 0 || y >= self.height as i32 || x >= self.width as i32 {
+        if x2 < 0 || y2 < 0 || y2 >= self.height as i32 || x2 >= self.width as i32 {
             return self.next();
         }
 
-        Some((x as usize, y as usize))
+        Some((x2 as usize, y2 as usize))
     }
 }
 
