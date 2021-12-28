@@ -2,6 +2,8 @@ use std::fs::File;
 use std::io::{self, BufReader};
 use std::str::FromStr;
 
+mod utils;
+
 mod day1;
 mod day2;
 mod day3;

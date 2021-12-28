@@ -106,15 +106,14 @@ impl crate::Solver for Solver {
 
         let mut pairs = HashMap::new();
 
+        // Initialize working structures
         for (a, b) in start_polymer
             .iter()
             .zip(start_polymer.iter().skip(1).chain(std::iter::once(&'_')))
         {
-            let e = letter_counts.entry(*a).or_insert(0);
-            *e += 1u64;
+            *letter_counts.entry(*a).or_insert(0) += 1u64;
 
-            let e = pairs.entry([*a, *b]).or_insert(0);
-            *e += 1u64;
+            *pairs.entry([*a, *b]).or_insert(0) += 1u64;
         }
 
         // Polymerize!!

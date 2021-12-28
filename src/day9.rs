@@ -1,63 +1,21 @@
 use crate::Lines;
 
+use crate::utils::{MapPoints, NeightborsNoDiag};
+
 pub struct Solver {}
 
 type Map<T> = Vec<Vec<T>>;
-
-struct Neightbours<'a, T> {
-    map: &'a Map<T>,
-    point: (i32, i32),
-    current: i32,
-}
-
-impl<'a, T> Neightbours<'a, T> {
-    pub fn new(map: &'a Map<T>, point: (i32, i32)) -> Self {
-        Neightbours {
-            map,
-            point,
-            current: 0,
-        }
-    }
-}
-
-impl<'a, T> Iterator for Neightbours<'a, T>
-where
-    T: Copy,
-{
-    type Item = ((i32, i32), T);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.current == 4 {
-            return None;
-        }
-        let (x, y) = self.point;
-        let (x, y) = match self.current {
-            0 => (x - 1, y),
-            1 => (x, y + 1),
-            2 => (x + 1, y),
-            3 => (x, y - 1),
-            _ => panic!("This should never happens"),
-        };
-
-        self.current += 1;
-
-        if x < 0 || y < 0 || y >= self.map.len() as i32 || x >= self.map[y as usize].len() as i32 {
-            return self.next();
-        }
-
-        Some(((x, y), self.map[y as usize][x as usize]))
-    }
-}
 
 impl Solver {
     fn compute_basins_size(
         &self,
         map: &Map<i32>,
         visited_map: &mut Map<bool>,
-        point: (i32, i32),
+        point: (usize, usize),
     ) -> u32 {
         let mut sum = 0;
-        for ((x, y), val) in Neightbours::new(&map, point) {
+        for (x, y) in NeightborsNoDiag::new(map[0].len(), map.len(), point) {
+            let val = map[y][x];
             if val == 9 || visited_map[y as usize][x as usize] {
                 continue;
             }
@@ -80,12 +38,11 @@ impl crate::Solver for Solver {
 
         let mut sum = 0;
 
-        for y in 0..map.len() {
-            for x in 0..map[y].len() {
-                let val = map[y][x];
-                if Neightbours::new(&map, (x as i32, y as i32)).all(|(_, v)| v > val) {
-                    sum += val + 1;
-                }
+        for (x, y) in MapPoints::new(map[0].len(), map.len()) {
+            let val = map[y][x];
+            if NeightborsNoDiag::new(map[0].len(), map.len(), (x, y)).all(|(x, y)| map[y][x] > val)
+            {
+                sum += val + 1;
             }
         }
 
@@ -114,7 +71,7 @@ impl crate::Solver for Solver {
 
         for y in 0..map.len() {
             for x in 0..map[y].len() {
-                let size = self.compute_basins_size(&map, &mut visited_map, (x as i32, y as i32));
+                let size = self.compute_basins_size(&map, &mut visited_map, (x, y));
                 if size > 0 {
                     basins.push(size);
                 }
