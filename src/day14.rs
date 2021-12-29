@@ -127,10 +127,9 @@ impl crate::Solver for Solver {
 
                     // Count new character
                     *letter_counts.entry(*new).or_insert(0) += count;
-                } else {
-                    // No rule, simply pass the pair as is
-                    *new_pairs.entry(pair).or_insert(0) += count;
                 }
+
+                // If no rule, no need to record pair as it won't produce anything
             }
 
             pairs = new_pairs;
