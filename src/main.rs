@@ -7,6 +7,7 @@ use std::fs;
 use std::io::Read;
 use std::io::Write;
 use std::io::{self, BufRead};
+use std::time::SystemTime;
 
 fn get_day_part(args: &Vec<String>) -> anyhow::Result<(u32, u32)> {
     let day = args[1].parse::<u32>();
@@ -80,6 +81,8 @@ fn main() -> anyhow::Result<()> {
 
     let lines = Lines::new(io::BufReader::new(file).lines());
 
+    let now = SystemTime::now();
+
     let res;
     if part == 1 {
         res = solver.solve_part1(lines);
@@ -87,7 +90,13 @@ fn main() -> anyhow::Result<()> {
         res = solver.solve_part2(lines);
     }
 
-    println!("Result for Day {} Part {} is {}", day, part, res);
+    println!(
+        "({:?}) Result for Day {} Part {} is {}",
+        now.elapsed().unwrap(),
+        day,
+        part,
+        res
+    );
 
     Ok(())
 }
