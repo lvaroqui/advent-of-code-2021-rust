@@ -22,6 +22,7 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
 
 mod day106;
 
@@ -94,6 +95,7 @@ pub fn get_solver(day: u32) -> Box<dyn Solver> {
         14 => Box::new(day14::Solver {}),
         15 => Box::new(day15::Solver {}),
         16 => Box::new(day16::Solver {}),
+        17 => Box::new(day17::Solver {}),
         106 => Box::new(day106::Solver {}),
         _ => Box::new(DummySolver {}),
     }
